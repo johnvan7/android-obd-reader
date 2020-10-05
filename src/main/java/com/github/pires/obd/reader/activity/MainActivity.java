@@ -1,5 +1,6 @@
 package com.github.pires.obd.reader.activity;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -37,6 +38,7 @@ import android.widget.TableRow;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.github.nkzawa.emitter.Emitter;
 import com.github.pires.obd.commands.ObdCommand;
 import com.github.pires.obd.commands.SpeedCommand;
 import com.github.pires.obd.commands.engine.RPMCommand;
@@ -58,6 +60,7 @@ import com.google.inject.Inject;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.net.URISyntaxException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
@@ -74,6 +77,13 @@ import roboguice.inject.InjectView;
 
 import static com.github.pires.obd.reader.activity.ConfigActivity.getGpsDistanceUpdatePeriod;
 import static com.github.pires.obd.reader.activity.ConfigActivity.getGpsUpdatePeriod;
+
+import com.github.nkzawa.socketio.client.IO;
+import com.github.nkzawa.socketio.client.Socket;
+
+import org.codehaus.jackson.JsonGenerationException;
+import org.codehaus.jackson.map.JsonMappingException;
+import org.codehaus.jackson.map.ObjectMapper;
 
 // Some code taken from https://github.com/barbeau/gpstest
 
@@ -108,6 +118,7 @@ public class MainActivity extends RoboActivity implements ObdProgressListener, L
     /// the trip log
     private TripLog triplog;
     private TripRecord currentTrip;
+    ObjectMapper mapper = new ObjectMapper();
 
     @InjectView(R.id.compass_text)
     private TextView compass;
@@ -338,6 +349,20 @@ public class MainActivity extends RoboActivity implements ObdProgressListener, L
         triplog = TripLog.getInstance(this.getApplicationContext());
         
         obdStatusTextView.setText(getString(R.string.status_obd_disconnected));
+
+        if (prefs.getBoolean(ConfigActivity.UPLOAD_DATA_KEY, false)) {
+            try {
+                mSocket = IO.socket(prefs.getString(ConfigActivity.UPLOAD_URL_KEY, ""));
+            } catch (URISyntaxException e) {
+                e.printStackTrace();
+            }
+            mSocket.on("connect", new Emitter.Listener() {
+                @Override
+                public void call(Object... args) {
+                    Log.d(TAG, "Socket connected");
+                }
+            });
+        }
     }
 
     @Override
@@ -382,6 +407,7 @@ public class MainActivity extends RoboActivity implements ObdProgressListener, L
             wakeLock.release();
     }
 
+    @SuppressLint("InvalidWakeLockTag")
     protected void onResume() {
         super.onResume();
         Log.d(TAG, "Resuming..");
@@ -483,6 +509,10 @@ public class MainActivity extends RoboActivity implements ObdProgressListener, L
                 Log.e(TAG, "Can't enable logging to file.", e);
             }
         }
+
+        if (prefs.getBoolean(ConfigActivity.UPLOAD_DATA_KEY, false)) {
+            mSocket.connect();
+        }
     }
 
     private void stopLiveData() {
@@ -519,6 +549,8 @@ public class MainActivity extends RoboActivity implements ObdProgressListener, L
         if (myCSVWriter != null) {
             myCSVWriter.closeLogCSVWriter();
         }
+
+        mSocket.disconnect();
     }
 
     protected void endTrip() {
@@ -693,6 +725,8 @@ public class MainActivity extends RoboActivity implements ObdProgressListener, L
         }
     }
 
+    private Socket mSocket;
+
     /**
      * Uploading asynchronous task
      */
@@ -703,15 +737,18 @@ public class MainActivity extends RoboActivity implements ObdProgressListener, L
             Log.d(TAG, "Uploading " + readings.length + " readings..");
             // instantiate reading service client
             final String endpoint = prefs.getString(ConfigActivity.UPLOAD_URL_KEY, "");
-            RestAdapter restAdapter = new RestAdapter.Builder()
-                    .setEndpoint(endpoint)
-                    .build();
-            ObdService service = restAdapter.create(ObdService.class);
             // upload readings
             for (ObdReading reading : readings) {
                 try {
-                    Response response = service.uploadReading(reading);
-                    assert response.getStatus() == 200;
+                    String json = mapper.writeValueAsString(reading);
+                    Log.d(TAG, "Emitting " + json);
+                    mSocket.emit("obddatasock", json);
+                }
+                    catch (JsonGenerationException | JsonMappingException  e) {
+                        // catch various errors
+                        e.printStackTrace();
+                    } catch (IOException e) {
+                        e.printStackTrace();
                 } catch (RetrofitError re) {
                     Log.e(TAG, re.toString());
                 }

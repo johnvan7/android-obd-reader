@@ -58,11 +58,11 @@
     <string name="pref_reader_config_summary">Comandos para configurar o leitor bluetooth, separados por nova linha</string>
     <string name="pref_reader_config_title">Configura&#231;&#227;o de comandos de leitura</string>
     <string name="pref_upload_category_title">Envio de dados</string>
-    <string name="pref_upload_summaryOff">Habilitar envio de dados http</string>
-    <string name="pref_upload_summaryOn">Desabilitar envio de dados http</string>
+    <string name="pref_upload_summaryOff">Habilitar envio de dados socket</string>
+    <string name="pref_upload_summaryOn">Desabilitar envio de dados socket</string>
     <string name="pref_upload_title">Habilitar envio de dados</string>
-    <string name="pref_upload_url_summary">URL POST que ir&#225; receber os dados em tempo real</string>
-    <string name="pref_upload_url_title">URL de upload</string>
+    <string name="pref_upload_url_summary">URL Server que ir&#225; receber os dados em tempo real</string>
+    <string name="pref_upload_url_title">URL de server socket</string>
     <string name="pref_vehicle_id_summary">Identificador &#250;nico opcional deste ve&#237;culo, utilizado para enviar os dados</string>
     <string name="pref_vehicle_id_title">ID do ve&#237;culo</string>
     <string name="pref_volumetric_efficiency_dialog_title">Efici&#234;ncia Volum&#233;trica (ex. 0.85)</string>

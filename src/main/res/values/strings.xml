@@ -59,13 +59,13 @@
     <string name="status_obd_data">receiving data&#8230;</string>
     <string name="status_obd_disconnected">disconnected</string>
     <string name="status_obd_no_support">NA</string>
-    <string name="pref_upload_title">Enable Data Upload</string>
-    <string name="pref_upload_summaryOff">Enable http data upload</string>
-    <string name="pref_upload_summaryOn">Disable http data upload</string>
-    <string name="pref_upload_url_title">Upload URL</string>
-    <string name="pref_upload_url_summary">POST URL that will accept real-time data</string>
+    <string name="pref_upload_title">Enable Socket connection</string>
+    <string name="pref_upload_summaryOff">Enable socket event emit</string>
+    <string name="pref_upload_summaryOn">Disable socket event emit</string>
+    <string name="pref_upload_url_title">Socket URL</string>
+    <string name="pref_upload_url_summary">Server URL that will accept real-time event</string>
     <string name="pref_vehicle_id_title">Vehicle ID</string>
-    <string name="pref_vehicle_id_summary">Optional unique id of this vehicle, used with uploaded data</string>
+    <string name="pref_vehicle_id_summary">Optional unique id of this vehicle, used with emitted event</string>
     <string name="pref_bluetooth_title">Enable Bluetooth</string>
     <string name="pref_bluetooth_summaryOff">Turn on Bluetooth</string>
     <string name="pref_bluetooth_summaryOn">Turn off Bluetooth</string>
@@ -106,4 +106,5 @@
     <string name="pref_dev_email_title">Developer Email</string>
     <string name="pref_dev_email_summary">Logs will be emailed to this address</string>
     <string name="text_noerrors">There were no errors found.!</string>
+    <string name="socket_connected">Socket connected</string>
 </resources>

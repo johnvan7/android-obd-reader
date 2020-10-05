@@ -45,11 +45,6 @@
     <string name="status_obd_ready">OK</string>
     <string name="status_obd_data">erhalte Daten&#8230;</string>
     <string name="status_obd_disconnected">nicht verbunden</string>
-    <string name="pref_upload_summaryOff">Aktiviere Datenupload per http</string>
-    <string name="pref_upload_summaryOn">Deaktiviere Datenupload per http</string>
-    <string name="pref_upload_title">Aktiviere Datenupload</string>
-    <string name="pref_upload_url_summary">Eine POST URL, die Echtzeitdaten akzeptiert</string>
-    <string name="pref_upload_url_title">Upload URL</string>
     <string name="title_pref_commands_summary">Wähle OBD Kommandos, die in Echtzeit angezeigt werden sollen</string>
     <string name="title_pref_commands_title">OBD Kommandos</string>
     <string name="pref_bluetooth_list_devices_summary">Liste gekoppelter Bluetoothgeräte</string>
